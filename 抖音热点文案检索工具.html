@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="文案喵">
+<meta name="theme-color" content="#faf8f6">
+<title>文案喵 · 抖音热点文案实时检索</title>
+<style>
+:root{
+  --white:#ffffff;--bg:#faf8f6;--card:#ffffff;
+  --blue-50:#f0f6fa;--blue-100:#e3eef6;--blue-200:#c5ddf0;
+  --blue-300:#8dbcd8;--blue-400:#5a9ab5;--blue-500:#3d7d98;
+  --coral:#ff8c69;--coral-light:#fff0eb;--peach:#ffb8a9;
+  --text:#3d3535;--text2:#8c7e7e;--text3:#b5a8a8;
+  --border:#e8e0dc;--shadow:0 2px 16px rgba(0,0,0,0.05);
+  --shadow-hover:0 6px 28px rgba(0,0,0,0.10);
+  --radius:18px;--radius-sm:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  line-height:1.6;overflow-x:hidden;min-height:100vh;
+  -webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;
+}
+/* 宠物装饰 */
+.pet{position:fixed;z-index:0;pointer-events:none;user-select:none;font-size:3rem;animation-timing-function:ease-in-out;animation-iteration-count:infinite;opacity:0.7;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.06))}
+.pf1{animation:pf1 7s infinite}.pf2{animation:pf2 8s infinite}.pf3{animation:pf3 6s infinite}
+.pb{animation:pb 4s infinite}.ps{animation:ps 10s infinite}.pw{animation:pw 5s infinite}
+@keyframes pf1{0%,100%{transform:translateY(0) rotate(0deg)}33%{transform:translateY(-14px) rotate(2deg)}66%{transform:translateY(-6px) rotate(-1deg)}}
+@keyframes pf2{0%,100%{transform:translateY(0) rotate(0deg) scaleX(1)}50%{transform:translateY(-18px) rotate(-3deg) scaleX(-1)}}
+@keyframes pf3{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-10px) rotate(5deg)}75%{transform:translateY(-4px) rotate(-3deg)}}
+@keyframes pb{0%,100%{transform:translateY(0) scale(1,1)}10%{transform:translateY(-22px) scale(1.1,0.9)}20%{transform:translateY(0) scale(0.95,1.05)}30%{transform:translateY(-8px) scale(1.02,0.98)}40%,100%{transform:translateY(0) scale(1,1)}}
+@keyframes ps{0%,100%{transform:translateY(0) scale(1);opacity:0.5}50%{transform:translateY(4px) scale(1.04);opacity:0.65}}
+@keyframes pw{0%,100%{transform:rotate(0deg)}20%{transform:rotate(6deg)}40%{transform:rotate(-4deg)}60%{transform:rotate(3deg)}80%{transform:rotate(-2deg)}}
+.paw{position:fixed;pointer-events:none;z-index:0;opacity:0.06;font-size:2rem;animation:pawF 3s infinite}
+@keyframes pawF{0%,100%{opacity:0.03;transform:scale(1)}50%{opacity:0.09;transform:scale(1.15)}}
+/* 主容器 */
+.app{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 16px 60px}
+/* 头部 */
+.hd{text-align:center;padding:32px 0 12px;position:relative;z-index:1}
+.hd-m{display:inline-flex;align-items:center;gap:8px;font-size:2.6rem;animation:pf1 6s infinite;cursor:default}
+.hd-t{font-size:1.8rem;font-weight:700;color:var(--text);margin-top:4px}
+.hd-t .ac{background:linear-gradient(135deg,var(--coral),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hd-s{color:var(--text3);font-size:0.88rem;margin-top:4px}
+/* 搜索卡片 */
+.sc{background:var(--card);border-radius:24px;padding:24px 22px 18px;box-shadow:var(--shadow);margin-bottom:20px;border:1.5px solid var(--border);position:relative;z-index:1;transition:box-shadow 0.3s}
+.sc:focus-within{box-shadow:var(--shadow-hover);border-color:var(--blue-200)}
+.sr{display:flex;gap:10px;align-items:center}
+.siw{flex:1;display:flex;align-items:center;background:var(--blue-50);border-radius:16px;padding:3px 5px 3px 16px;border:2px solid transparent;transition:all 0.25s}
+.siw:focus-within{border-color:var(--blue-300);background:var(--white);box-shadow:0 0 0 4px rgba(141,188,216,0.15)}
+.sic{font-size:1.2rem;margin-right:4px;flex-shrink:0}
+.si{flex:1;border:none;outline:none;background:transparent;font-size:1rem;color:var(--text);padding:12px 0}
+.si::placeholder{color:var(--text3)}
+.bs{background:var(--coral);color:#fff;border:none;border-radius:14px;padding:13px 24px;font-size:0.95rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.25s;display:flex;align-items:center;gap:4px}
+.bs:hover{background:#ff7b55;transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,140,105,0.3)}
+.bs:active{transform:scale(0.97)}
+/* 热门标签 */
+.ht{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap;align-items:center}
+.htl{font-size:0.78rem;color:var(--text3);display:flex;align-items:center;gap:2px}
+.htg{background:var(--coral-light);color:#d4745b;border:1px solid #ffe0d6;padding:5px 13px;border-radius:20px;font-size:0.8rem;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.htg:hover{background:#ffe4db;border-color:var(--coral);transform:translateY(-1px)}
+/* 一键全搜 */
+.sab{display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 14px;background:var(--blue-50);border-radius:12px;font-size:0.8rem;color:var(--blue-500)}
+.bsa{background:var(--blue-400);color:#fff;border:none;border-radius:10px;padding:8px 18px;font-size:0.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.2s}
+.bsa:hover{background:var(--blue-500)}
+/* 分区标题 */
+.st{font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;position:relative;z-index:1}
+/* 平台卡片网格 */
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;position:relative;z-index:1}
+.pc{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:16px 12px;cursor:pointer;text-align:center;transition:all 0.25s;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--text)}
+.pc:hover{border-color:var(--blue-200);transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.pc:active{transform:scale(0.96)}
+.pci{font-size:2rem}.pcn{font-size:0.85rem;font-weight:700}.pch{font-size:0.68rem;color:var(--text3)}
+/* 提示框 */
+.tb{background:var(--blue-50);border-radius:var(--radius-sm);padding:14px 16px;margin-top:16px;margin-bottom:16px;font-size:0.8rem;color:var(--blue-500);line-height:1.7;position:relative;z-index:1;border:1px solid var(--blue-100)}
+.tb strong{color:var(--blue-400)}
+/* 分类导航 */
+.cn{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;position:relative;z-index:1}
+.cc{padding:5px 12px;border-radius:20px;font-size:0.76rem;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--text2);transition:all 0.2s;white-space:nowrap;user-select:none}
+.cc:hover{border-color:var(--coral);color:var(--coral)}
+.cc.ac{background:var(--coral);color:#fff;border-color:var(--coral)}
+/* 结果 */
+.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;position:relative;z-index:1}
+.rc{font-size:0.8rem;color:var(--text2)}
+.sb{display:flex;gap:5px}
+.sbtn{background:var(--white);border:1.5px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:8px;cursor:pointer;font-size:0.76rem;transition:all 0.2s}
+.sbtn.ac{background:var(--coral);color:#fff;border-color:var(--coral)}
+.rl{display:flex;flex-direction:column;gap:8px;position:relative;z-index:1}
+.cdc{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;transition:all 0.25s;cursor:pointer}
+.cdc:hover{border-color:var(--blue-200);box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+.cdct{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:4px}
+.cdb{display:inline-flex;align-items:center;gap:3px;font-size:0.68rem;padding:2px 8px;border-radius:6px;white-space:nowrap;font-weight:600}
+.bg{background:var(--coral-light);color:#e8734a}
+.bl{background:#fff0f5;color:#e8528a}.bsd{background:#eef0ff;color:#6366f1}
+.bh{background:#e8faf6;color:#14b8a6}.bgo{background:#fffde8;color:#ca8a04}
+.bt{background:#e8fafe;color:#0891b2}.bf{background:#fff7e8;color:#ea580c}
+.blf{background:#eaf8f0;color:#16a34a}.bw{background:#e8f0fe;color:#2563eb}
+.bm{background:#fffde8;color:#ca8a04}.bcr{background:#fff0ee;color:#e84040}
+.bhr{background:#fef2f0;color:#d9462f}
+.htd{display:inline-flex;align-items:center;gap:2px;background:linear-gradient(135deg,#ff8c69,#ffb8a9);color:#fff;font-size:0.66rem;padding:2px 7px;border-radius:4px;font-weight:600}
+.ct{font-size:0.9rem;font-weight:500;color:var(--text);margin-bottom:4px;line-height:1.5}
+.cm{display:flex;gap:6px;flex-wrap:wrap;font-size:0.7rem;color:var(--text3);margin-bottom:4px}
+.ca{display:flex;gap:5px;flex-wrap:wrap}
+.bsm{padding:4px 10px;border-radius:6px;font-size:0.72rem;border:1.5px solid var(--border);background:var(--white);color:var(--text2);cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:2px}
+.bsm:hover{border-color:var(--blue-300);color:var(--blue-500);background:var(--blue-50)}
+.emp{text-align:center;padding:50px 16px;color:var(--text3)}
+.emi{font-size:3rem;margin-bottom:8px}
+/* Toast */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:10px 24px;border-radius:24px;font-size:0.84rem;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999}
+.toast.show{opacity:1}
+/* Footer */
+.ft{text-align:center;padding:20px 16px;color:var(--text3);font-size:0.72rem;position:relative;z-index:1}
+.ftp{display:inline-block;font-size:1.4rem;animation:pb 3s infinite;vertical-align:middle;margin:0 3px}
+/* 响应式 */
+@media(max-width:640px){
+  .pet{font-size:2rem!important}
+  .pet[style*="top:6vh"]{top:3vh!important;left:1vw!important}
+  .pet[style*="top:10vh"]{top:5vh!important;right:1vw!important}
+  .pet[style*="top:40vh"],.pet[style*="top:50vh"],.pet[style*="top:70vh"],.pet[style*="top:78vh"]{display:none}
+  .pet[style*="top:25vh"]{display:none}
+  .pet[style*="bottom"]{display:none}
+  .paw{display:none}
+  .hd{padding:20px 0 8px}.hd-t{font-size:1.4rem}.hd-m{font-size:2rem}
+  .sc{padding:16px 14px 12px;border-radius:18px}
+  .sr{flex-direction:column;gap:8px}
+  .bs{width:100%;justify-content:center;padding:12px}
+  .pg{grid-template-columns:repeat(3,1fr);gap:6px}
+  .pc{padding:12px 6px}.pci{font-size:1.5rem}.pcn{font-size:0.76rem}
+  .cn{gap:4px}.cc{padding:4px 10px;font-size:0.72rem}
+  .sab{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- 宠物装饰 -->
+<div class="pet ps" style="top:6vh;left:4vw;font-size:3.5rem">😺💤</div>
+<div class="pet pf2" style="top:10vh;right:5vw;font-size:3.2rem">🐕✨</div>
+<div class="pet pf1" style="top:40vh;left:2vw;font-size:2.6rem">🐱</div>
+<div class="pet pb" style="top:50vh;right:3vw;font-size:3rem">🐶</div>
+<div class="pet pw" style="top:70vh;left:5vw;font-size:2.8rem">😸</div>
+<div class="pet ps" style="top:78vh;right:6vw;font-size:3.2rem">🐕💤</div>
+<div class="pet pf3" style="top:25vh;left:50vw;font-size:2rem">🐦</div>
+<div class="pet pf2" style="bottom:2vh;left:35vw;font-size:2.4rem">🐕‍🦺</div>
+<div class="pet pf1" style="bottom:3vh;right:30vw;font-size:2.2rem">🐈</div>
+<div class="paw" style="top:15vh;left:12vw">🐾</div>
+<div class="paw" style="top:35vh;right:10vw;animation-delay:1s">🐾</div>
+<div class="paw" style="top:60vh;left:10vw;animation-delay:2s">🐾</div>
+<div class="paw" style="top:75vh;right:14vw;animation-delay:0.5s">🐾</div>
+
+<!-- 主容器 -->
+<div class="app">
+  <header class="hd">
+    <div class="hd-m">🐱</div>
+    <h1 class="hd-t">文案<span class="ac">喵</span> · 抖音文案检索</h1>
+    <p class="hd-s">✨ 输入任意关键词 → 一键搜索全网平台抖音热门文案</p>
+  </header>
+
+  <!-- 搜索 -->
+  <div class="sc">
+    <div class="sr">
+      <div class="siw">
+        <span class="sic">🔍</span>
+        <input type="text" class="si" id="si" placeholder="输入关键词：如 情绪共鸣、职场扎心、治愈温柔…" autocomplete="off">
+      </div>
+      <button class="bs" onclick="doSearch()">🔎 搜索</button>
+    </div>
+    <div class="ht">
+      <span class="htl">🔥 热搜：</span>
+      <span class="htg" onclick="quickSearch('情绪共鸣')">情绪共鸣</span>
+      <span class="htg" onclick="quickSearch('职场扎心')">职场扎心</span>
+      <span class="htg" onclick="quickSearch('治愈温柔')">治愈温柔</span>
+      <span class="htg" onclick="quickSearch('搞笑日常')">搞笑日常</span>
+      <span class="htg" onclick="quickSearch('副业搞钱')">副业搞钱</span>
+      <span class="htg" onclick="quickSearch('伤感文案')">伤感文案</span>
+      <span class="htg" onclick="quickSearch('马年2026')">马年2026</span>
+    </div>
+    <div class="sab">
+      <span>🚀 一键同时在以下平台搜索：</span>
+      <button class="bsa" onclick="searchAll()">💥 一键全搜（6平台）</button>
+      <span style="font-size:0.72rem;color:var(--text3)">将在新标签页中打开</span>
+    </div>
+  </div>
+
+  <!-- 平台搜索面板 -->
+  <div class="st">🌐 点击下方平台卡片 → 直接搜索实时文案</div>
+  <div class="pg" id="pg"></div>
+
+  <!-- 说明 -->
+  <div class="tb">
+    <strong>💡 为什么不用嵌入式搜索结果？</strong><br>
+    抖音、百度、小红书等大型平台出于安全考虑，<strong>禁止被其他网页内嵌显示</strong>
+    （X-Frame-Options / CSP 安全策略）。点击上方卡片将在<strong>新标签页</strong>中打开真实的搜索结果，
+    确保你能看到<strong>最新、最全、实时</strong>的热门文案内容。
+  </div>
+
+  <!-- 灵感文库 -->
+  <div class="st">📚 灵感文库 <span style="font-size:0.75rem;color:var(--text3);font-weight:400">· 146条精选爆款</span></div>
+  <div class="cn" id="cn">
+    <span class="cc ac" onclick="filterLib('全部',this)">📋 全部</span>
+    <span class="cc" onclick="filterLib('情绪共鸣',this)">💗 共鸣</span>
+    <span class="cc" onclick="filterLib('伤感扎心',this)">💔 扎心</span>
+    <span class="cc" onclick="filterLib('爱情情感',this)">💕 爱情</span>
+    <span class="cc" onclick="filterLib('治愈释怀',this)">🌸 治愈</span>
+    <span class="cc" onclick="filterLib('励志奋斗',this)">🚀 励志</span>
+    <span class="cc" onclick="filterLib('搞笑幽默',this)">😂 搞笑</span>
+    <span class="cc" onclick="filterLib('实用干货',this)">💡 干货</span>
+    <span class="cc" onclick="filterLib('搞钱创业',this)">💰 搞钱</span>
+    <span class="cc" onclick="filterLib('职场成长',this)">💼 职场</span>
+    <span class="cc" onclick="filterLib('人生感悟',this)">🌿 感悟</span>
+    <span class="cc" onclick="filterLib('亲情家庭',this)">👨‍👩‍👧 亲情</span>
+    <span class="cc" onclick="filterLib('发疯文学',this)">🤪 发疯</span>
+  </div>
+
+  <div class="rh">
+    <span class="rc">共 <strong style="color:var(--coral)" id="ln">0</strong> 条文案</span>
+    <div class="sb">
+      <button class="sbtn ac" onclick="sortLib('hot')">🔥 热度</button>
+      <button class="sbtn" onclick="sortLib('new')">🕐 最新</button>
+    </div>
+  </div>
+  <div class="rl" id="rl"></div>
+</div>
+
+<div class="toast" id="toast">✅ 已复制到剪贴板</div>
+
+<footer class="ft">
+  <span class="ftp">🐱</span> 文案喵 v3.1 · 支持电脑/手机/微信直接打开 · 输入任意关键词→一键搜索全网
+  <span class="ftp">🐶</span>
+</footer>
+
+<script>
+// ========== 数据库 ==========
+var DB = [
+  {cat:"情绪共鸣",text:"成年人的世界，沉默不是妥协，是慢慢看清，也慢慢放过。",tags:["成年","感悟","释怀"],hot:98},
+  {cat:"情绪共鸣",text:"不敢倒下，因为身后空无一人。不敢生病，因为没人照顾。不敢说累，因为没人惯着。",tags:["压力","孤独","坚强"],hot:97},
+  {cat:"情绪共鸣",text:"生活从来不会刻意为难谁，让你累的，往往是你不肯放过自己的执念。",tags:["生活","释怀","治愈"],hot:96},
+  {cat:"情绪共鸣",text:"最深的疲惫，来自于你同时驾驭着两个自己：一个在行动，另一个在远处冷冷地评判着这场行动。",tags:["内耗","心理","哲思"],hot:94},
+  {cat:"情绪共鸣",text:"成年人的世界，连崩溃都要选好时间。",tags:["成年","崩溃","扎心"],hot:93},
+  {cat:"情绪共鸣",text:"小时候，哭是解决问题的绝招；长大后，笑是面对生活的武器。",tags:["成长","蜕变"],hot:92},
+  {cat:"情绪共鸣",text:"你越在意什么，什么就越折磨你。学会放下，心才会自由。",tags:["放下","释怀"],hot:91},
+  {cat:"情绪共鸣",text:"很多崩溃其实都发生在安静里，你坐在那里一动不动，内心世界却已经坍塌粉碎。",tags:["崩溃","安静"],hot:86},
+  {cat:"情绪共鸣",text:"后来满大街都是「祝你快乐」，却没人问你「累不累」。",tags:["关心","疲惫"],hot:85},
+  {cat:"情绪共鸣",text:"间歇性努力，持续性躺平，说的是不是你？",tags:["躺平","自律"],hot:87},
+  {cat:"自我宣言",text:"2026，不被情绪裹挟，不向世俗低头，把日子过成自己喜欢的模样。",tags:["2026","态度"],hot:95},
+  {cat:"自我宣言",text:"不内耗，不纠结，往事清零，爱恨随意。把时间留给值得的人和事。",tags:["内耗","清零"],hot:94},
+  {cat:"自我宣言",text:"允许一切发生，接纳所有不完美，松弛自在，清醒独立，做不被定义的自己。",tags:["接纳","松弛"],hot:92},
+  {cat:"自我宣言",text:"生活没有标准答案，开心就是最优解。事事甘心，件件如意。",tags:["生活","态度"],hot:90},
+  {cat:"自我宣言",text:"若你决定灿烂，山无遮，海无拦。只管努力，剩下的交给时间。",tags:["励志","灿烂"],hot:88},
+  {cat:"自我宣言",text:"真正成熟，是不再向别人证明自己，而是安安静静过好生活。",tags:["成熟","自我"],hot:86},
+  {cat:"自我宣言",text:"不想回的消息就不回，讨厌的人就离远一点，不开心就表现出来。",tags:["态度","边界"],hot:84},
+  {cat:"自我宣言",text:"在自己的节奏里，过好每一个当下。",tags:["节奏","当下"],hot:81},
+  {cat:"爱情情感",text:"我想让你知道，你不是我权衡利弊后的选择，而是我怦然心动后，明知不可为而为之的坚定。",tags:["表白","坚定"],hot:93},
+  {cat:"爱情情感",text:"三餐四季，岁岁年年，身边换了又换，还好始终是你。",tags:["陪伴","温暖"],hot:91},
+  {cat:"爱情情感",text:"风是暖的，糖是甜的，而你，是我藏在心底最久的欢喜。",tags:["甜蜜","暗恋"],hot:89},
+  {cat:"爱情情感",text:"有一种默契叫：我不找你，你不找我。不是不想，是不知道以什么身份。",tags:["默契","遗憾"],hot:88},
+  {cat:"爱情情感",text:"人一旦有了感情，就窝囊得不行。你说要敬往事一杯酒再爱也不回，可如果他伸出手，你还是会跟他走。",tags:["深情","矛盾"],hot:87},
+  {cat:"爱情情感",text:"我们从起初的无话不说，到后来的无话可说。从红了脸相遇，到红了眼散场。",tags:["开始","结束"],hot:85},
+  {cat:"爱情情感",text:"世上最牢固的感情不是我爱你，而是我习惯了有你。",tags:["习惯","依赖"],hot:84},
+  {cat:"爱情情感",text:"晚点遇见吧，我刚好成熟，你刚好温柔。",tags:["成熟","期待"],hot:83},
+  {cat:"伤感扎心",text:"这世界上最残忍的一句话，不是对不起，也不是我恨你，而是——我们再也回不去。",tags:["回不去","遗憾"],hot:96},
+  {cat:"伤感扎心",text:"最后想起来波澜不惊的人是你，而还没说话眼眶就湿润的人，是我。",tags:["不对称","伤感"],hot:94},
+  {cat:"伤感扎心",text:"沉默就是答案，躲闪就是答案，不再主动就是答案，其实你早就该明白的。",tags:["答案","清醒"],hot:92},
+  {cat:"伤感扎心",text:"所有一切你能伤害我的机会，不过都是我给的。",tags:["伤害","自省"],hot:91},
+  {cat:"伤感扎心",text:"热情有限，胃疾多年，熬夜成瘾，偶尔失眠，爱而不得，得非所爱，你仍单身，却很自由。",tags:["孤独","自由"],hot:90},
+  {cat:"伤感扎心",text:"时间不是让人不痛，也不是让人忘记痛，而是让人习惯痛。",tags:["时间","习惯"],hot:89},
+  {cat:"伤感扎心",text:"心中纵有万语千言想对你说，却找不到一个打扰你的理由。",tags:["克制","思念"],hot:88},
+  {cat:"伤感扎心",text:"热水放久了都会变凉，何况这是爱情。",tags:["变凉","爱情"],hot:87},
+  {cat:"伤感扎心",text:"有时候我们愿意原谅一个人，不是真的愿意原谅他，而是不愿意失去他。",tags:["原谅","卑微"],hot:86},
+  {cat:"伤感扎心",text:"放弃一个喜欢的人，就像一把大火烧掉你住了很久的房子——你知道那是你的家，但已经回不去了。",tags:["放弃","心碎"],hot:84},
+  {cat:"伤感扎心",text:"回忆越是甜，就越是伤人。",tags:["回忆","反差"],hot:83},
+  {cat:"治愈释怀",text:"把「如果当初」换成「幸好现在」，语气没变，主语换了。",tags:["释怀","成长"],hot:91},
+  {cat:"治愈释怀",text:"某天突然发现，想起你时，心里不再发紧，只像翻过一页纸。",tags:["放下","时间"],hot:89},
+  {cat:"治愈释怀",text:"睡觉也是一种解脱，睡着了就会不悲伤、不生气、不烦恼、不孤单。",tags:["睡眠","解脱"],hot:87},
+  {cat:"治愈释怀",text:"夏日的遗憾一定会被秋风温柔化解，祝我们好在秋天。",tags:["季节","希望"],hot:86},
+  {cat:"治愈释怀",text:"从现在起，我将不再期待，只珍惜我所拥有的。",tags:["珍惜","当下"],hot:85},
+  {cat:"治愈释怀",text:"和过去和解吧，毕竟我们过的是将来。",tags:["和解","将来"],hot:83},
+  {cat:"治愈释怀",text:"恭喜我度过了看谁都像你的日子。谢谢你的无情让我放下了你。",tags:["放下","感谢"],hot:82},
+  {cat:"治愈释怀",text:"分手应该体面，谁都不要说抱歉。何来亏欠，我敢给就敢心碎。",tags:["体面","洒脱"],hot:81},
+  {cat:"励志奋斗",text:"你受的苦，吃的亏，担的责，忍的痛，到最后都会变成光，照亮你的路。",tags:["吃苦","回报"],hot:93},
+  {cat:"励志奋斗",text:"我走得很慢，但绝不后退。",tags:["坚持","进步"],hot:91},
+  {cat:"励志奋斗",text:"不是看到希望才坚持，而是坚持了才有希望。",tags:["坚持","希望"],hot:90},
+  {cat:"励志奋斗",text:"放下你的浮躁，放下你的懒惰，放下你的三分钟热度。少年，荒废够了，该努力了。",tags:["戒躁","努力"],hot:89},
+  {cat:"励志奋斗",text:"当你的才华还撑不起你的野心时，就应该静下心来学习。",tags:["学习","清醒"],hot:88},
+  {cat:"励志奋斗",text:"比我差的人还没放弃，比我好的人仍在努力，我就更没资格说我无能为力。",tags:["比较","激励"],hot:87},
+  {cat:"励志奋斗",text:"心有火光，不惧路长。步履不停，终有花开。",tags:["火光","坚持"],hot:86},
+  {cat:"励志奋斗",text:"没人会等你，风生水起靠自己。",tags:["独立","霸气"],hot:83},
+  {cat:"实用干货",text:"从140斤瘦到98斤，我只做对了这1件事：把不吃晚饭换成早餐吃对。",tags:["减肥","方法"],hot:92},
+  {cat:"实用干货",text:"试错19次后，我把口播稿压缩到8秒，完播率从21%飙到68%，核心就3个字：去废话。",tags:["口播","技巧"],hot:90},
+  {cat:"实用干货",text:"月薪3千和3万的区别不在努力程度，在信息差。这5个免费信息源普通人也能用。",tags:["搞钱","信息差"],hot:88},
+  {cat:"实用干货",text:"让算法主动推你的3个标题信号：数字 + 身份标签 + 认知反差。",tags:["算法","标题"],hot:87},
+  {cat:"实用干货",text:"面试官问「你的缺点是什么」——学这个3步回应法，offer翻倍。",tags:["面试","职场"],hot:85},
+  {cat:"实用干货",text:"普通人做抖音第1条就爆的概率不到3%，但用这4步选题法，第100条之前必爆。",tags:["抖音运营"],hot:84},
+  {cat:"实用干货",text:"2026年还在手动写文案？这5个AI提示词让一个人干出一个团队的量。",tags:["AI","效率"],hot:83},
+  {cat:"反差猎奇",text:"你以为我在躺平，其实我在批量生成爆款选题。二本毕业，裸辞做剪辑，接单报价3800起。",tags:["反差","副业"],hot:89},
+  {cat:"反差猎奇",text:"我发现一个反常识真相：越省钱的人，反而越穷。因为省的是消费，亏的是投资。",tags:["反常识","思维"],hot:87},
+  {cat:"反差猎奇",text:"显瘦穿搭搜了半年，直到看见菜市场卖鱼阿姨的围裙系法。",tags:["穿搭","反差"],hot:85},
+  {cat:"反差猎奇",text:"同样24小时，有人刷了200条短视频，有人用AI写了200条短视频脚本。",tags:["效率","AI"],hot:83},
+  {cat:"反差猎奇",text:"假如生活欺骗了你，不要着急，拿出美颜相机去欺骗生活。",tags:["美颜","豁达"],hot:79},
+  {cat:"生活烟火",text:"2026，愿自己守得住烟火日常，也追得上漫天星光，岁岁安澜，步步铿锵。",tags:["2026","愿望"],hot:94},
+  {cat:"生活烟火",text:"不慌不忙，向阳生长，做个明朗的人，有热爱，有底气，有来日方长。",tags:["成长","阳光"],hot:90},
+  {cat:"生活烟火",text:"日子是过给自己的，不是演给别人看的，舒服自在比什么都重要。",tags:["自我","舒服"],hot:88},
+  {cat:"生活烟火",text:"生活一半烟火，一半清欢；人生一半清醒，一半释然。",tags:["烟火","释然"],hot:87},
+  {cat:"生活烟火",text:"不纠结过往，不焦虑未来，专注当下的每一刻，就是对生活最好的温柔。",tags:["当下","焦虑"],hot:84},
+  {cat:"生活烟火",text:"把期待降低，把依赖变少，你会发现日子过得轻松很多。",tags:["期待","轻松"],hot:83},
+  {cat:"搞笑幽默",text:"妈妈说不要跟不三不四的朋友玩，所以我一直跟很二的朋友玩。",tags:["妈妈","谐音"],hot:92},
+  {cat:"搞笑幽默",text:"吾日三省吾身：吾很好，吾很棒，吾配享太庙。",tags:["自信","自夸"],hot:90},
+  {cat:"搞笑幽默",text:"没有人能利用我，因为我没有用。",tags:["自嘲","摆烂"],hot:89},
+  {cat:"搞笑幽默",text:"终于突破了事业的瓶颈，发现还有瓶盖。",tags:["职场","谐音"],hot:88},
+  {cat:"搞笑幽默",text:"不要垂头丧气，显矮。",tags:["安慰","短句"],hot:87},
+  {cat:"搞笑幽默",text:"我们又不是很熟，你叫我美女就行。",tags:["社交","开场"],hot:86},
+  {cat:"搞笑幽默",text:"社会的边角料，妈妈的小骄傲。",tags:["自嘲","妈妈"],hot:85},
+  {cat:"搞笑幽默",text:"如果早起对我有利，我希望是宾利。",tags:["早起","谐音"],hot:84},
+  {cat:"搞笑幽默",text:"我的兴趣分静态和动态：静态是睡觉，动态是翻身。",tags:["宅","自嘲"],hot:83},
+  {cat:"搞笑幽默",text:"有人相爱，有人看海，有人七八个闹钟起不来。",tags:["起床","对比"],hot:80},
+  {cat:"人生感悟",text:"每个人的花期不同，不必焦虑别人比你提前拥有。",tags:["比较","焦虑"],hot:93},
+  {cat:"人生感悟",text:"人只要知道自己是在做什么，又能不那么看重结果，日子就很容易快乐。",tags:["快乐","过程"],hot:91},
+  {cat:"人生感悟",text:"世间所有的好，莫过于如愿以偿四个字。",tags:["愿望","幸福"],hot:89},
+  {cat:"人生感悟",text:"信任就像一张纸，皱了，即使抚平，也恢复不了原样。",tags:["信任","伤害"],hot:87},
+  {cat:"人生感悟",text:"头等舱可以优先登机，银行VIP可以不用排队……世界从不平等，你有多努力，才有多特殊。",tags:["现实","努力"],hot:86},
+  {cat:"人生感悟",text:"喝酒不要超过六分醉，吃饭不要超过七分饱，爱人不要超过八分情。",tags:["分寸","哲理"],hot:83},
+  {cat:"亲情家庭",text:"家人这一页，应是椿萱并茂，棠棣同馨。",tags:["家人","古语"],hot:92},
+  {cat:"亲情家庭",text:"父母在，人生尚有来处；父母去，人生只剩归途。",tags:["父母","感恩"],hot:91},
+  {cat:"亲情家庭",text:"小时候你陪我长大，长大后我陪你变老。",tags:["陪伴","父母"],hot:90},
+  {cat:"亲情家庭",text:"幸福就是——一家人整整齐齐，健健康康。",tags:["幸福","家庭"],hot:89},
+  {cat:"亲情家庭",text:"岁月静好，父母未老。",tags:["岁月","祝福"],hot:87},
+  {cat:"亲情家庭",text:"世界很大，家最暖。",tags:["家","温暖"],hot:86},
+  {cat:"友情闺蜜",text:"月亮不会奔向你，但我会，不远万里的那种。",tags:["闺蜜","陪伴"],hot:91},
+  {cat:"友情闺蜜",text:"闺蜜就是只要我一个眼神就能了解我的全部。",tags:["闺蜜","默契"],hot:90},
+  {cat:"友情闺蜜",text:"吵不散，骂不走的才叫闺蜜。",tags:["闺蜜","定义"],hot:89},
+  {cat:"友情闺蜜",text:"别人都问我飞得高不高，只有你问我飞得累不累。",tags:["关心","温暖"],hot:88},
+  {cat:"友情闺蜜",text:"你是人间四月天，我是东北地三鲜。",tags:["幽默","搭配"],hot:87},
+  {cat:"友情闺蜜",text:"你陪着我的时候，我从来没有羡慕过任何人。",tags:["陪伴","幸福"],hot:86},
+  {cat:"职场成长",text:"今天你拖延的每一秒，都是给未来挖的坑。",tags:["拖延","励志"],hot:87},
+  {cat:"职场成长",text:"努力的意义，在于拥有更多选择权。",tags:["努力","选择"],hot:86},
+  {cat:"职场成长",text:"辞职不是为了不工作，是为了不把人生耗在「这就够了」的舒适区里。",tags:["辞职","勇气"],hot:85},
+  {cat:"职场成长",text:"别用5%的负面评价，否定自己100%的努力。",tags:["心态","自信"],hot:84},
+  {cat:"职场成长",text:"后来才知道，和不同的人说不同的话，是一种非常可贵的能力——叫情商。而不是虚伪。",tags:["情商","人际"],hot:82},
+  {cat:"自律坚持",text:"自律者出众，懒散者出局。",tags:["自律","对比"],hot:90},
+  {cat:"自律坚持",text:"真正的努力，从来都悄无声息。",tags:["努力","低调"],hot:88},
+  {cat:"自律坚持",text:"自律不是殚精竭虑地苦行，而是长期朝着一个目标前进。",tags:["自律","目标"],hot:87},
+  {cat:"自律坚持",text:"健身和读书，是世界上成本最低的升值方式；懒惰是索价极高的奢侈品。",tags:["健身","读书"],hot:86},
+  {cat:"自律坚持",text:"做自己的光，不用借谁的亮。",tags:["独立","自我"],hot:82},
+  {cat:"正能量",text:"循光而行，向阳而生。",tags:["光","向阳"],hot:89},
+  {cat:"正能量",text:"时光不语，静待花开。",tags:["时光","等待"],hot:87},
+  {cat:"正能量",text:"心怀热爱，何惧山海。",tags:["热爱","勇气"],hot:86},
+  {cat:"正能量",text:"慢慢理解世界，慢慢更新自己。",tags:["成长","温柔"],hot:84},
+  {cat:"搞钱创业",text:"2026，一马当先搞事业，马不停蹄追热爱。所求皆如愿，所行皆坦途。",tags:["2026","马年"],hot:91},
+  {cat:"搞钱创业",text:"你以为我在摆烂，其实我靠副业月入3万。",tags:["副业","反差"],hot:86},
+  {cat:"搞钱创业",text:"副业推荐搜了半年，直到试了这个不用露脸的方法。",tags:["副业","推荐"],hot:84},
+  {cat:"搞钱创业",text:"穷一点没关系，反正你以后也赚不到钱。",tags:["自嘲","扎心"],hot:85},
+  {cat:"发疯文学",text:"难过想大哭一场，结果盖着被子睡着了。",tags:["难过","反转"],hot:88},
+  {cat:"发疯文学",text:"生活给我一巴掌，我说没有上次爽。",tags:["挨打","豁达"],hot:87},
+  {cat:"发疯文学",text:"狗都不想挪窝的天气，我还得上班。",tags:["上班","天气"],hot:86},
+  {cat:"发疯文学",text:"最近头好痒，不会是要长脑子了吧。",tags:["长脑","自嘲"],hot:85},
+  {cat:"发疯文学",text:"我看起来胖胖的，其实是被生活打肿了，没事哒。",tags:["身材","自嘲"],hot:84},
+  {cat:"发疯文学",text:"没人会一直陪着我，但我会一直陪着我。",tags:["孤独","自爱"],hot:82},
+  {cat:"暗恋温柔",text:"聊天框里打了又删的「在干嘛」，最后发出去的是「今天月亮好亮」。",tags:["暗恋","克制"],hot:90},
+  {cat:"暗恋温柔",text:"你借我橡皮那秒，我擦掉了整张卷子的答案，却记住了你指尖的温度。",tags:["暗恋","细节"],hot:89},
+  {cat:"暗恋温柔",text:"我爱过烈酒，但如今饮白水也觉得温柔。",tags:["成长","释怀"],hot:88},
+  {cat:"暗恋温柔",text:"就算终有一别，也请不要辜负了相遇。",tags:["离别","珍惜"],hot:86},
+  {cat:"暗恋温柔",text:"你承诺过的月亮还是没有出现，而我无眠，替你多爱了一夜人间。",tags:["暗恋","等待"],hot:85},
+  {cat:"马年借势",text:"告别乙巳的琐碎，奔赴丙午的惊喜。一马当先搞事业，马不停蹄追热爱！",tags:["马年","事业"],hot:93},
+  {cat:"马年借势",text:"瑞马踏春，快乐升温。新的一年，愿你眼里有光，心中有爱，马到成功！",tags:["马年","祝福"],hot:90},
+  {cat:"马年借势",text:"床前明月光，2026要发光。马年不做社畜，做自己的千里马。",tags:["马年","创意"],hot:87},
+  {cat:"马年借势",text:"祥马贺岁，快乐加倍。愿马年的每一天都充满甜蜜与惊喜。",tags:["马年","快乐"],hot:85}
+];
+DB.forEach(function(d){d._ix=(d.text+' '+d.tags.join(' ')+' '+d.cat).toLowerCase()});
+
+// 平台定义
+var PLATFORMS = [
+  {key:'douyin',name:'抖音',icon:'🎵',hint:'实时热门视频',url:function(q){return 'https://www.douyin.com/search/'+encodeURIComponent(q)}},
+  {key:'baidu',name:'百度',icon:'🔵',hint:'全网网页资讯',url:function(q){return 'https://www.baidu.com/s?wd='+encodeURIComponent(q+' 抖音 文案')}},
+  {key:'toutiao',name:'头条',icon:'📰',hint:'爆款文章讨论',url:function(q){return 'https://so.toutiao.com/search?dvpf=pc&keyword='+encodeURIComponent(q)}},
+  {key:'weixin',name:'微信',icon:'💬',hint:'公众号视频号',url:function(q){return 'https://weixin.sogou.com/weixin?type=2&query='+encodeURIComponent(q+' 文案')}},
+  {key:'xiaohongshu',name:'小红书',icon:'📕',hint:'种草热门笔记',url:function(q){return 'https://www.xiaohongshu.com/search_result?keyword='+encodeURIComponent(q)}},
+  {key:'kuaishou',name:'快手',icon:'⚡',hint:'热门短视频',url:function(q){return 'https://www.kuaishou.com/search/video?searchKey='+encodeURIComponent(q)}}
+];
+
+// 渲染平台卡片
+function renderPlatformGrid(){
+  var q=document.getElementById('si').value.trim()||'抖音热点文案';
+  var html='';
+  for(var i=0;i<PLATFORMS.length;i++){
+    var p=PLATFORMS[i];
+    html+='<div class="pc" onclick="window.open(\''+p.url(q)+'\',\'_blank\')" title="在'+p.name+'搜索">';
+    html+='<span class="pci">'+p.icon+'</span>';
+    html+='<span class="pcn">'+p.name+'搜索</span>';
+    html+='<span class="pch">'+p.hint+'</span></div>';
+  }
+  document.getElementById('pg').innerHTML=html;
+}
+
+function doSearch(){renderPlatformGrid();libSearch=document.getElementById('si').value.trim();renderLib()}
+function quickSearch(t){document.getElementById('si').value=t;doSearch()}
+
+function searchAll(){
+  var q=document.getElementById('si').value.trim()||'抖音热点文案';
+  for(var i=0;i<PLATFORMS.length;i++){
+    setTimeout(function(p){window.open(p.url(q),'_blank')},i*250,PLATFORMS[i]);
+  }
+  showToast('🚀 已在 6 个平台打开搜索！请查看新标签页');
+}
+
+// 文库
+var libCat='全部',libSort='hot',libSearch='';
+
+function filterLib(cat,el){
+  libCat=cat;
+  var chips=document.querySelectorAll('#cn .cc');
+  for(var i=0;i<chips.length;i++)chips[i].classList.remove('ac');
+  if(el)el.classList.add('ac');
+  renderLib();
+}
+
+function sortLib(type){
+  libSort=type;
+  var btns=document.querySelectorAll('.sbtn');
+  for(var i=0;i<btns.length;i++)btns[i].classList.remove('ac');
+  event.target.classList.add('ac');
+  renderLib();
+}
+
+function renderLib(){
+  var results=[];
+  for(var i=0;i<DB.length;i++){
+    var d=DB[i];
+    if(libCat!=='全部'&&d.cat!==libCat)continue;
+    if(libSearch&&d._ix.indexOf(libSearch.toLowerCase())===-1)continue;
+    results.push(d);
+  }
+  if(libSort==='hot')results.sort(function(a,b){return b.hot-a.hot});
+  else results.reverse();
+
+  document.getElementById('ln').textContent=results.length;
+  var list=document.getElementById('rl');
+  if(results.length===0){
+    list.innerHTML='<div class="emp"><div class="emi">😕</div><p>换个关键词或分类试试吧</p></div>';
+    return;
+  }
+
+  var badgeMap={情绪共鸣:'bg',自我宣言:'bg',爱情情感:'bl',伤感扎心:'bsd',治愈释怀:'bh',励志奋斗:'bgo',实用干货:'bt',反差猎奇:'bt',生活烟火:'blf',人生感悟:'blf',搞笑幽默:'bf',亲情家庭:'bl',友情闺蜜:'bl',职场成长:'bw',自律坚持:'bw',正能量:'bgo',搞钱创业:'bm',发疯文学:'bcr',暗恋温柔:'bl',马年借势:'bhr'};
+
+  var html='';
+  for(var i=0;i<results.length;i++){
+    var d=results[i];
+    var cls=badgeMap[d.cat]||'bg';
+    var safe=d.text.replace(/`/g,'\\`').replace(/\$/g,'\\$');
+    var du='https://www.douyin.com/search/'+encodeURIComponent(d.text.substring(0,18));
+    var bu='https://www.baidu.com/s?wd='+encodeURIComponent(d.text);
+    html+='<div class="cdc" onclick="copyText(\`'+safe+'\`)">';
+    html+='<div class="cdct"><span class="cdb '+cls+'">'+d.cat+'</span><span class="htd">🔥 '+d.hot+'</span></div>';
+    html+='<div class="ct">'+d.text+'</div>';
+    html+='<div class="cm">';
+    for(var j=0;j<d.tags.length;j++)html+='#'+d.tags[j]+' ';
+    html+='</div>';
+    html+='<div class="ca" onclick="event.stopPropagation()">';
+    html+='<a href="'+du+'" target="_blank" class="bsm">🎵 抖音搜</a>';
+    html+='<a href="'+bu+'" target="_blank" class="bsm">🔵 百度搜</a>';
+    html+='<button class="bsm" onclick="copyText(\`'+safe+'\`)">📋 复制</button>';
+    html+='</div></div>';
+  }
+  list.innerHTML=html;
+}
+
+function copyText(text){
+  if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){showToast('✅ 已复制到剪贴板！')}).catch(function(){fallbackCopy(text)})}
+  else{fallbackCopy(text)}
+}
+function fallbackCopy(text){
+  var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);
+  ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('✅ 已复制到剪贴板！');
+}
+function showToast(m){
+  var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show')},1800);
+}
+
+document.getElementById('si').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch()});
+var timer;
+document.getElementById('si').addEventListener('input',function(){clearTimeout(timer);timer=setTimeout(renderPlatformGrid,400)});
+
+renderPlatformGrid();
+renderLib();
+</script>
+</body>
+</html>
